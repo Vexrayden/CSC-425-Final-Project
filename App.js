@@ -8,7 +8,7 @@ const app = express();
 const port = 3000;
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/your-database-name', {
+mongoose.connect('mongodb+srv://Sslaughter:<ButterflyDBuserp@2>@customers.4y2v8.mongodb.net/?retryWrites=true&w=majority&appName=Customers', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
