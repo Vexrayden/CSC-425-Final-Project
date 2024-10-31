@@ -2,10 +2,13 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user'); // Ensure the model path is correct
 
+// --- User Routes ---
+
 // Create a new user
 router.post('/', async (req, res) => {
     try {
-        const user = new User(req.body); // Create a user with the provided data
+        const { username, email, password } = req.body; // Destructure fields from request body
+        const user = new User({ username, email, password }); // Create a user with the provided data
         await user.save(); // Save user to the database
         res.status(201).json(user); // Return the created user with a 201 status
     } catch (error) {
@@ -20,6 +23,19 @@ router.get('/', async (req, res) => {
         res.status(200).json(users); // Return the users with a 200 status
     } catch (error) {
         res.status(500).json({ error: error.message }); // Return error if fetching users fails
+    }
+});
+
+// Get a user by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id); // Find user by ID
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' }); // Return error if user not found
+        }
+        res.status(200).json(user); // Return the user found
+    } catch (error) {
+        res.status(500).json({ error: error.message }); // Return error if fetching user fails
     }
 });
 
@@ -61,4 +77,13 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// --- Account Routes ---
+
+// Example route to get account data
+router.get('/accounts', (req, res) => {
+    res.send('Account API endpoint'); // Return a simple message for the accounts endpoint
+});
+
+// Export the router
 module.exports = router;
+
