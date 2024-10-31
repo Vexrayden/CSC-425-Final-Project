@@ -8,7 +8,7 @@ const Dashboard = () => {
   
     // Function to handle navigation
     const handleNavigate = () => {
-      navigate('/Emails.js'); // goes to Email.js file for data collection
+      navigate('/Emails'); // goes to Email.js file for data collection
     };
   
     return (

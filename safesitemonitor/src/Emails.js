@@ -1,10 +1,10 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import EmailForm from './EmailForm.js'; // Import the EmailForm component
+import React from 'react';
+import EmailForm from './EmailForm'; // Ensure this path is correct
 
-const App = () => {
+const Emails = () => {
     return (
-        <div>
+        <div style={{ padding: '20px' }}>
             <h1>Store Your Active Emails Here</h1>
             <EmailForm /> {/* Include the EmailForm component */}
         </div>

@@ -1,27 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user');
+const User = require('../models/user'); // Ensure the model path is correct
 
-// Create a new user (for email submissions)
-router.post('/accounts', async (req, res) => {
-    const { username, email, password, role } = req.body;
+// --- User Routes ---
 
-    // Simple input validation
-    if (!email || !username || !password) {
-        return res.status(400).json({ error: 'Email, username, and password are required.' });
-    }
-
+// Create a new user
+router.post('/user', async (req, res) => {
     try {
-        const user = new User({ username, email, password, role });
+        const { username, email, password } = req.body;
+        const user = new User({ username, email, password });
         await user.save();
-        res.status(201).json({ message: 'User created successfully', user });
+        res.status(201).json(user);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 });
 
 // Get all users
-router.get('/accounts', async (req, res) => {
+router.get('/user', async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json(users);
@@ -30,10 +26,23 @@ router.get('/accounts', async (req, res) => {
     }
 });
 
+// Get a user by ID
+router.get('/user/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Update a user by ID
-router.patch('/accounts/:id', async (req, res) => {
+router.patch('/user/:id', async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['username', 'email', 'password', 'role'];
+    const allowedUpdates = ['username', 'email', 'password'];
     const isValidOperation = updates.every(update => allowedUpdates.includes(update));
 
     if (!isValidOperation) {
@@ -44,7 +53,7 @@ router.patch('/accounts/:id', async (req, res) => {
         const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
 
         if (!user) {
-            return res.status(404).json();
+            return res.status(404).json({ error: 'User not found' });
         }
 
         res.status(200).json(user);
@@ -54,18 +63,27 @@ router.patch('/accounts/:id', async (req, res) => {
 });
 
 // Delete a user by ID
-router.delete('/accounts/:id', async (req, res) => {
+router.delete('/user/:id', async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
 
         if (!user) {
-            return res.status(404).json();
+            return res.status(404).json({ error: 'User not found' });
         }
 
-        res.status(200).json(user);
+        res.status(200).json({ message: 'User deleted successfully', user });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
+
+// --- Account Routes *Fixed* ---
+
+// Example route to get account data
+router.get('/accounts', (req, res) => {
+    res.send('Account API endpoint');
+});
+
+// I'll address later as needed
 
 module.exports = router;
