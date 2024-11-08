@@ -7,7 +7,7 @@ import Dashboard from './Dashboard.js'; // Dashboard page
 import Emails from './Emails.js'; // Emails page for MongoDB data
 import './index.css'; // Global styles
 import reportWebVitals from './reportWebVitals.js'; // Performance measure function
-import ProtectedRoute from './routes/ProtectedRoute.js';
+import ProtectedRoute from './ProtectedRoute.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../../models/user'); // Ensure the model path is correct
+const User = require('../models/user'); // Ensure the model path is correct
 
 // --- User Routes ---
 
