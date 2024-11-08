@@ -9,15 +9,24 @@ const Login = () => {
   const [password, setPassword] = useState(''); // Takes password inputs
   const [showRegister, setShowRegister] = useState(false); // Toggle register form
 
+  // Login function with API call
   const loginAttempt = async (e) => {
     e.preventDefault(); // Prevent page reload
-    if (username === 'Samuel' && password === 'Pa$$w0rd') {
-      navigate('/Dashboard'); // Navigate to dashboard
-    } else {
+    try {
+      const response = await axios.post('http://localhost:3000/api/login', {
+        username,
+        password,
+      });
+      localStorage.setItem('token', response.data.token); // Store token in localStorage
+      alert('Login successful!');
+      navigate('/Dashboard'); // Navigate to protected page
+    } catch (error) {
+      console.error(error);
       alert('Invalid credentials, try again.');
     }
   };
 
+  // Register function with API call
   const createAccount = async (e) => {
     e.preventDefault();
     try {

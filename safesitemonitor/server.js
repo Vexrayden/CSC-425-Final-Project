@@ -1,13 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const userRoutes = require('./routes/users'); // Import user routes
-const accountRoutes = require('./routes/accounts'); // Import account routes
+const userRoutes = require('./src/routes/users'); // Import user routes
+const accountRoutes = require('./src/routes/accounts'); // Import account routes
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+const JWT_SECRET = "Here_Key"; // My secret login key
 
 // MongoDB connection string
 const uri = 'mongodb+srv://Sslaughter:ButterflyDBuserp%402@customers.4y2v8.mongodb.net/?retryWrites=true&w=majority&appName=Customers';
@@ -39,6 +43,33 @@ app.post('/api/register', async (req, res) => {
       res.status(500).json({ message: 'Error registering user' });
     }
   });
+
+// Login that uses registered login
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+     return res.status(401).json({ message: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+  res.json({ token });
+});
+
+// Protected route
+app.get('/api/protected', (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) return res.status(401).json({ message: 'Access denied' });
+
+  try {
+     const decoded = jwt.verify(token, JWT_SECRET);
+     res.json({ message: 'Access granted', user: decoded });
+  } catch (error) {
+     res.status(401).json({ message: 'Invalid token' });
+  }
+});
 
 // Use user and account routes
 app.use('/api/users', userRoutes);      // For user routes

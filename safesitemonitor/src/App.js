@@ -14,9 +14,6 @@ const App = () => {
       <h1>Home Page</h1>
       <p>Welcome to the homepage!</p>
       <button onClick={goToLoginPage}>Go to Login Page</button>
-      
-      <h2>User List</h2>
-      <UserList /> {/* Include the UserList component here */}
     </div>
   );
 };
