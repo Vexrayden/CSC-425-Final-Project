@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import UserList from './UserList.js';
 
 const App = () => {
   const navigate = useNavigate();

@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/user'); // Make sure the path to user.js is correct
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 const JWT_SECRET = "Here_Key"; // Your secret login key
 
 // MongoDB connection string
@@ -21,6 +21,9 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 // Middleware setup
 app.use(express.json());
 app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001',  // Allow only requests from Vite frontend
+}));
 
 // Register Route
 app.post('/api/register', async (req, res) => {
