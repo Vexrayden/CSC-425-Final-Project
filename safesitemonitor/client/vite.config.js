@@ -13,6 +13,7 @@ export default defineConfig({
       '/api': 'http://localhost:3000',  // Proxy API calls to the Node server on port 3000
       '/auth': 'http://localhost:3000', // If you're using auth API routes, make sure they're proxied too
     },
+    historyApiFallback: true,
   },
 });
 

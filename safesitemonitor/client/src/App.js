@@ -5,8 +5,11 @@ const App = () => {
   const navigate = useNavigate();
 
   const goToLoginPage = () => {
-    navigate('/login'); // Navigate to the Login page
+    console.log('Navigating to /login');
+    navigate('/Login'); // Navigate to the Login page
   };
+
+  console.log('App component rendered');
 
   return (
     <div>
