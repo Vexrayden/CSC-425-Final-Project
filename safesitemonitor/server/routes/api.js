@@ -1,7 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const authenticateToken = require('../middleware/auth'); // Authentication middleware
+const authenticateToken = require('../routes/auth'); // Authentication middleware
 const router = express.Router();
 
 // JWT Secret Key (use environment variable for security)
@@ -76,4 +77,5 @@ router.get('/data', (req, res) => {
 });
 
 module.exports = router;
+
 
