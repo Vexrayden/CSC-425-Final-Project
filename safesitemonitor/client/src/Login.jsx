@@ -72,6 +72,7 @@ const Login = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter Username"
                 required
+                autoComplete="username"  // Updated to camelCase
               />
             </label>
           </div>
@@ -84,6 +85,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
                 required
+                autoComplete="email"  // Updated to camelCase
               />
             </label>
           </div>
@@ -96,6 +98,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
                 required
+                autoComplete="new-password"  // Updated to camelCase
               />
             </label>
           </div>
@@ -115,6 +118,7 @@ const Login = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter Username"
                 required
+                autoComplete="username"  // Updated to camelCase
               />
             </label>
           </div>
@@ -127,6 +131,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
                 required
+                autoComplete="current-password"  // Updated to camelCase
               />
             </label>
           </div>
@@ -141,3 +146,5 @@ const Login = () => {
 };
 
 export default Login;
+
+

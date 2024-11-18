@@ -1,24 +1,27 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import App from './App'; // Home page
 import Login from './Login'; // Login page
 import Dashboard from './Dashboard'; // Dashboard page
 import Emails from './Emails'; // Emails page for MongoDB data
 import NotFound from './NotFound'; // NotFound component
+import ProtectedRoute from './ProtectedRoute'; // Protect routes for authenticated users
 import './index.css'; // Global styles
 import reportWebVitals from './reportWebVitals'; // Performance measurement
-import ProtectedRoute from './ProtectedRoute'; // Protect routes for authenticated users
 
 console.log('React App is starting...');
-const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const root = createRoot(document.getElementById('root'));
+
 root.render(
-    <Router>
+  <React.StrictMode>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route
-          path="/Dashboard"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
@@ -26,7 +29,7 @@ root.render(
           }
         />
         <Route
-          path="/Emails"
+          path="/emails"
           element={
             <ProtectedRoute>
               <Emails />
@@ -35,10 +38,9 @@ root.render(
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
+  </React.StrictMode>
 );
 
 reportWebVitals();
-
-
 

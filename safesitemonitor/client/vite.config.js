@@ -3,9 +3,8 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  base: '/', // Set the base path for the app
   esbuild: {
-    jsxInject: `import React from 'react'`, // Automatically inject React for JSX
   },
   server: {
     port: 3001, // Vite React app runs on port 3001
@@ -18,7 +17,3 @@ export default defineConfig({
     historyApiFallback: true, // Ensure React app routes work in the browser
   },
 });
-
-
-
-
