@@ -10,13 +10,13 @@ import './index.css'; // Global styles
 import reportWebVitals from './reportWebVitals'; // Performance measurement
 import ProtectedRoute from './ProtectedRoute'; // Protect routes for authenticated users
 
+console.log('React App is starting...');
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <Router>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/Login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route
           path="/Dashboard"
           element={
@@ -36,9 +36,9 @@ root.render(
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
-  </React.StrictMode>
 );
 
 reportWebVitals();
+
 
 

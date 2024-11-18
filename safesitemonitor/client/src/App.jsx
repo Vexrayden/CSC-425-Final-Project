@@ -1,15 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import './app.css';
 
 const App = () => {
   const navigate = useNavigate();
 
+  console.log('App component is rendering');
+
   const goToLoginPage = () => {
     console.log('Navigating to /login');
-    navigate('/Login'); // Navigate to the Login page
+    navigate('/login'); // Navigate to the Login page
   };
-
-  console.log('App component rendered');
 
   return (
     <div>
@@ -21,3 +22,4 @@ const App = () => {
 };
 
 export default App;
+

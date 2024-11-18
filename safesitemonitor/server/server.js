@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const apiRoutes = require('./routes/api'); // Import API routes
 const authRoutes = require('./routes/auth'); // Import Auth routes
+const path = require('path'); // Import path for static files
 
 const app = express();
 const port = 3000;
@@ -31,10 +32,22 @@ app.get('/', (req, res) => {
   res.send("Server is running!");
 });
 
+// Serve static files from the React app (production build)
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the 'client/dist' folder (Vite's build output)
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+
+  // Handle React routing, return index.html for all routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+  });
+}
+
 // Start server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
 
 
 

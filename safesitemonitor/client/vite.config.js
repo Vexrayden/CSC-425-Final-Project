@@ -1,20 +1,24 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// Vite config with proxy setup for your backend and JSX automatic injection
 export default defineConfig({
   plugins: [react()],
+  base: '/',
   esbuild: {
-    jsxInject: `import React from 'react'`,  // Automatically inject React for JSX (React 17+)
+    jsxInject: `import React from 'react'`, // Automatically inject React for JSX
   },
   server: {
-    port: 3001,  // Vite React app runs on port 3001
+    port: 3001, // Vite React app runs on port 3001
     proxy: {
-      '/api': 'http://localhost:3000',  // Proxy API calls to the Node server on port 3000
-      '/auth': 'http://localhost:3000', // If you're using auth API routes, make sure they're proxied too
+      '/api': {
+        target: 'http://localhost:3000', // Proxy API calls to the Node server on port 3000
+        changeOrigin: true,
+      },
     },
-    historyApiFallback: true,
+    historyApiFallback: true, // Ensure React app routes work in the browser
   },
 });
+
+
 
 

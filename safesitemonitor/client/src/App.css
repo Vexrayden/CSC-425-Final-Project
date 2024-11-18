@@ -1,8 +1,10 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+    display: block;
+    width: 100%;
+    min-height: 100vh;  /* Ensures the root element takes up at least the full viewport height */
+    height: auto;  /* Removes any fixed height, allowing the content to grow naturally */
+    padding: 2rem;
+    text-align: center; 
 }
 
 .logo {
