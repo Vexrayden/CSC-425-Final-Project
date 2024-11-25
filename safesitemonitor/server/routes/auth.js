@@ -9,6 +9,22 @@ const generateToken = (user) => {
     return jwt.sign({ userId: user._id, username: user.username }, 'your_jwt_secret', { expiresIn: '1h' });
 };
 
+// Middleware to authenticate token and attach user info to the request
+const authenticateToken = (req, res, next) => {
+    const token = req.header('Authorization')?.replace('Bearer ', ''); // Extract token from header
+    if (!token) {
+        return res.status(401).json({ message: 'Authentication token missing' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'your_jwt_secret'); // Replace with your actual JWT secret
+        req.user = decoded; // Attach user info from the token to the request object
+        next(); // Continue to the next middleware/route handler
+    } catch (error) {
+        return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+};
+
 // Register a new user
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
@@ -64,6 +80,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Export the router
-module.exports = router;
+// Export the router and middleware
+module.exports = { router, authenticateToken };
+
 
