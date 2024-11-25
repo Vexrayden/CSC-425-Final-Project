@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const apiRoutes = require('./routes/api'); // Import API routes
-const authRoutes = require('./routes/auth'); // Import Auth routes
+const authRoutes = require('./routes/auth'); // Import Auth routes (This line was missing)
 const path = require('path'); // Import path for static files
 
 const app = express();
@@ -25,7 +25,7 @@ app.use(cors({
 
 // Mount API routes
 app.use('/api', apiRoutes);  // All routes in api.js will be prefixed with /api
-app.use('/auth', authRoutes); // Same for auth routes
+app.use('/api/auth', authRoutes);  // Mount authRoutes here
 
 // Default route for root path to check server status
 app.get('/', (req, res) => {
@@ -47,6 +47,7 @@ if (process.env.NODE_ENV === 'production') {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
 
 
 

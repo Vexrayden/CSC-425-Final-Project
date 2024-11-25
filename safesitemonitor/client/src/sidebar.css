@@ -1,0 +1,78 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px; /* Default expanded width */
+    background-color: #333;
+    color: white;
+    transition: width 0.3s ease; /* Smooth transition for width */
+    z-index: 1000; /* Ensure the sidebar is on top */
+  }
+  
+  .sidebar.collapsed {
+    width: 60px; /* Collapsed width when the sidebar is minimized */
+  }
+  
+  /* Other styles (no change) */
+  .sidebar-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+  }
+  
+  .toggle-btn {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .sidebar-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+  
+  .sidebar-links li {
+    width: 100%;
+  }
+  
+  .sidebar-links a {
+    display: block;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .sidebar-links a:hover {
+    background-color: #575757;
+  }
+  
+  .sidebar.collapsed .sidebar-links a {
+    padding-left: 10px; /* Keep text aligned when collapsed */
+  }
+  
+  .sidebar.collapsed .sidebar-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center links when collapsed */
+  }
+  
+  .sidebar.collapsed .sidebar-links li {
+    text-align: center;
+  }
+  
+  
+  
+  
+  

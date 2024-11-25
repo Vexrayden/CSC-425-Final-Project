@@ -6,17 +6,22 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState(''); // Takes username inputs
-  const [email, setEmail] = useState(''); // Takes email inputs
+  const [email, setEmail] = useState(''); // Takes email inputs (for registration)
   const [password, setPassword] = useState(''); // Takes password inputs
   const [showRegister, setShowRegister] = useState(false); // Toggle register form
 
   // loginAttempt function
   const loginAttempt = async (e) => {
     e.preventDefault();
+
+    // Trim the username and password to remove any accidental extra spaces
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+
     try {
-      const response = await axios.post('/api/login', {
-        username,
-        password,
+      const response = await axios.post('http://localhost:3000/api/auth/login', {
+        username: trimmedUsername,
+        password: trimmedPassword,
       });
 
       if (response.data && response.data.token) {
@@ -28,8 +33,12 @@ const Login = () => {
         alert('Failed to retrieve token. Please try again.');
       }
     } catch (error) {
-      console.error(error);
-      alert('Invalid credentials, try again.');
+      console.error('Login Error:', error);
+      if (error.response) {
+        alert(error.response.data.message || 'Error with login');
+      } else {
+        alert('Network error or server unreachable');
+      }
     }
   };
 
@@ -37,19 +46,23 @@ const Login = () => {
   const createAccount = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/register', {
-        username,
-        email,
-        password,
+      const trimmedUsername = username.trim();
+      const trimmedPassword = password.trim();
+      const trimmedEmail = email.trim();
+
+      const response = await axios.post('http://localhost:3000/api/auth/register', {
+        username: trimmedUsername,
+        email: trimmedEmail,
+        password: trimmedPassword,
       });
 
       alert('Account created successfully!');
       setShowRegister(false); // Hide register form
-      setUsername('');
+      setUsername(''); // Clear form fields
       setPassword('');
       setEmail('');
     } catch (error) {
-      console.error(error);
+      console.error('Registration Error:', error);
       if (error.response && error.response.status === 400) {
         alert('User already exists');
       } else {
@@ -72,7 +85,7 @@ const Login = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter Username"
                 required
-                autoComplete="username"  // Updated to camelCase
+                autoComplete="username"
               />
             </label>
           </div>
@@ -85,7 +98,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Email"
                 required
-                autoComplete="email"  // Updated to camelCase
+                autoComplete="email"
               />
             </label>
           </div>
@@ -98,7 +111,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
                 required
-                autoComplete="new-password"  // Updated to camelCase
+                autoComplete="new-password"
               />
             </label>
           </div>
@@ -118,7 +131,7 @@ const Login = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter Username"
                 required
-                autoComplete="username"  // Updated to camelCase
+                autoComplete="username"
               />
             </label>
           </div>
@@ -131,7 +144,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter Password"
                 required
-                autoComplete="current-password"  // Updated to camelCase
+                autoComplete="current-password"
               />
             </label>
           </div>
@@ -146,5 +159,3 @@ const Login = () => {
 };
 
 export default Login;
-
-

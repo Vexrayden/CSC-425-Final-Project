@@ -1,7 +1,27 @@
 const mongoose = require('mongoose');
-const bycrypt = require('bcryptjs');
 
 const Schema = mongoose.Schema;
+
+// Define Account Schema
+const accountSchema = new Schema({
+    service: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    email: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    password: {
+        type: String,
+        required: true
+    }
+}, {
+    _id: true,
+    timestamps: true
+});
 
 // Define User Schema
 const userSchema = new Schema({
@@ -26,6 +46,7 @@ const userSchema = new Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
+    accounts: [accountSchema], // <-- Fixed here to match the API
     created_at: {
         type: Date,
         default: Date.now
@@ -36,13 +57,11 @@ const userSchema = new Schema({
     }
 });
 
-// Middleware to update `updated_at` before each save
-userSchema.pre('save', function (next) {
-    this.updated_at = Date.now();
-    next();
-});
-
 // Create the User model
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
+
+
+
+

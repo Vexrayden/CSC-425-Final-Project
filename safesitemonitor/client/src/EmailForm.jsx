@@ -1,40 +1,43 @@
-
 import axios from 'axios';
-
 import React, { useState } from 'react';
 
-const EmailForm = () => {
+const EmailForm = ({ userId, authToken }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [service, setService] = useState(''); // New state for the service
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Logic to send email and password to the server or handle them
-        console.log('Email:', email);
-        console.log('Password:', password);
-        
-        // You can implement an API call here to send data to your backend
         try {
-            // Make a POST request to the API
-            const response = await axios.post('http://localhost:3000/api/user', {
-                email,
-                password,
-            });
-            setMessage('Credentials saved successfully!');
+            // Make a POST request to the API to save the account
+            const response = await axios.post(
+                `http://localhost:3000/api/user/${userId}/accounts`,
+                {
+                    email,
+                    password,
+                    service, // Add service to the request body
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${authToken}`, // Pass the token for authentication
+                    },
+                }
+            );
+
+            setMessage('Account saved successfully!');
             setError('');
             console.log(response.data); // Response from the server
         } catch (err) {
-            setError('Error saving credentials: ' + err.response.data.error);
+            setError('Error saving account: ' + (err.response?.data?.error || err.message));
             setMessage('');
         }
-        // For demonstration, let's display a message
-        setMessage('Credentials saved successfully!');
-        
+
         // Clear the input fields
         setEmail('');
         setPassword('');
+        setService('');
     };
 
     return (
@@ -58,9 +61,19 @@ const EmailForm = () => {
                         required
                     />
                 </div>
+                <div>
+                    <label>Service:</label>
+                    <input
+                        type="text"
+                        value={service}
+                        onChange={(e) => setService(e.target.value)}
+                        required
+                    />
+                </div>
                 <button type="submit">Submit</button>
             </form>
             {message && <p>{message}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );
 };
