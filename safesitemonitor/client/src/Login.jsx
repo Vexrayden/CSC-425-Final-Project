@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Axios for making HTTP requests
+import { UserContext } from './context/UserContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext); // Get setUser from context
 
   const [username, setUsername] = useState(''); // Takes username inputs
   const [email, setEmail] = useState(''); // Takes email inputs (for registration)
@@ -24,13 +26,21 @@ const Login = () => {
         password: trimmedPassword,
       });
 
-      if (response.data && response.data.token) {
+      if (response.data && response.data.token && response.data.userId) {
         // Store token in localStorage
         localStorage.setItem('token', response.data.token);
+
+        // Set the user data in context
+        setUser({
+          userId: response.data.userId,
+          username: trimmedUsername, // Username from form input
+          token: response.data.token,
+        });
+
         alert('Login successful!');
         navigate('/Dashboard'); // Navigate to protected route
       } else {
-        alert('Failed to retrieve token. Please try again.');
+        alert('Failed to retrieve user data. Please try again.');
       }
     } catch (error) {
       console.error('Login Error:', error);

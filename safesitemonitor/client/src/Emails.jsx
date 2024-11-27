@@ -1,11 +1,23 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
+import React, { useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import EmailForm from './EmailForm'; // Ensure this path is correct
+import { UserContext } from './context/UserContext'; // Import UserContext
 
 const Emails = () => {
-    const location = useLocation();
     const navigate = useNavigate(); // Initialize the navigate function
-    const { userId, authToken } = location.state || {}; // Retrieve data passed via navigate
+    const { user } = useContext(UserContext); // Access user context for user data
+
+    // useEffect to handle navigation if user is not available
+    useEffect(() => {
+        if (!user) {
+            navigate('/login'); // Redirect to login if no user is found
+        }
+    }, [user, navigate]); // Re-run the effect when 'user' or 'navigate' changes
+
+    // If the user is not found, the component won't render (due to the redirect in useEffect)
+    if (!user) return null;
+
+    const { userId, authToken } = user; // Extract userId and authToken from context
 
     // Function to navigate back to Dashboard
     const goBackToDashboard = () => {
@@ -35,4 +47,6 @@ const Emails = () => {
 };
 
 export default Emails;
+
+
 

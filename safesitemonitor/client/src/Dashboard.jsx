@@ -76,7 +76,7 @@ const Dashboard = () => {
         <h1>Dashboard</h1>
         {data ? (
           <>
-            <h2>Welcome to the Dashboard!</h2>
+            <h2>Here is the hub for safesitemonitor users!</h2>
             <p>Thank you for using our application. Click below to view your saved accounts.</p>
 
             {/* Button to toggle the display of saved accounts */}

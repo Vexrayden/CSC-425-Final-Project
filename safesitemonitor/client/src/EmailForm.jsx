@@ -1,40 +1,37 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { UserContext } from './context/UserContext';
 
 const EmailForm = ({ userId, authToken }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [service, setService] = useState(''); // New state for the service
+    const [service, setService] = useState('');
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!userId) {
+            setError('User ID is missing. Please log in again.');
+            return;
+        }
+
         try {
-            // Make a POST request to the API to save the account
             const response = await axios.post(
                 `http://localhost:3000/api/user/${userId}/accounts`,
-                {
-                    email,
-                    password,
-                    service, // Add service to the request body
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${authToken}`, // Pass the token for authentication
-                    },
-                }
+                { email, password, service },
+                { headers: { Authorization: `Bearer ${authToken}` } }
             );
 
             setMessage('Account saved successfully!');
             setError('');
-            console.log(response.data); // Response from the server
+            console.log(response.data);
         } catch (err) {
             setError('Error saving account: ' + (err.response?.data?.error || err.message));
             setMessage('');
         }
 
-        // Clear the input fields
         setEmail('');
         setPassword('');
         setService('');
@@ -79,3 +76,4 @@ const EmailForm = ({ userId, authToken }) => {
 };
 
 export default EmailForm;
+
