@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { UserContext } from './context/UserContext';
+import UserContext from './context/UserContext';
 
 const EmailForm = ({ userId, authToken }) => {
     const [email, setEmail] = useState('');

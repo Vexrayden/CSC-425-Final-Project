@@ -8,7 +8,7 @@ import Emails from './Emails';
 import Profile from './Profile';
 import NotFound from './NotFound';
 import ProtectedRoute from './ProtectedRoute';
-import { UserProvider } from './context/UserContext'; // Import UserProvider for global state management
+import UserProvider from './context/UserContext'; // Import UserProvider for global state management
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 

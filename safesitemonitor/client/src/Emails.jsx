@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import EmailForm from './EmailForm'; // Ensure this path is correct
-import { UserContext } from './context/UserContext'; // Import UserContext
+import UserContext from './context/UserContext'; // Import UserContext
 
 const Emails = () => {
     const navigate = useNavigate(); // Initialize the navigate function
