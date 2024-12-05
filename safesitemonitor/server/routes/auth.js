@@ -1,11 +1,11 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const User = require('../models/user'); // Import your User schema/model
 const router = express.Router();
 
 // Secret key for JWT
-const JWT_SECRET = 'Here_Key'; //secret key for me
+const JWT_SECRET = 'Here_Key'; // Make sure this secret is secure in a real application
 
 // Middleware to authenticate the token
 const authenticateToken = (req, res, next) => {
@@ -107,6 +107,21 @@ router.get('/protected', authenticateToken, (req, res) => {
   res.json({ message: 'This is a protected route, and you are authenticated!' });
 });
 
+// Route to fetch the current user (authenticated)
+router.get('/current-user', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId); // `req.user` is populated by the token middleware
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Server error. Please try again later.' });
+  }
+});
+
 module.exports = router;
+
 
 

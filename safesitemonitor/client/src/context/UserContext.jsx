@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const UserContext = createContext();
 
@@ -6,6 +7,7 @@ const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Use navigate to redirect if needed
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -15,32 +17,44 @@ const UserProvider = ({ children }) => {
       return;
     }
 
-    fetch('http://localhost:3000/api/current-user', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/current-user', {
+          headers: { Authorization: `Bearer ${token}` }, // Pass token as Bearer token
+        });
+
+        if (response.status === 401 || response.status === 403) {
+          // If token is invalid or expired, clear token and redirect to login page
+          localStorage.removeItem('token');
+          setUser(null);
+          setError('Token expired or invalid');
+          navigate('/login'); // Redirect to login page
+          return;
         }
-        return res.json();
-      })
-      .then((data) => {
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
         if (data.user) {
-            setUser(data.user); // Update the user state with the returned user object
+          setUser(data.user); // Update the user state with the returned user object
+          setError(null);
         } else {
-            throw new Error('Invalid response format: "user" not found in response');
+          throw new Error('Invalid response format: "user" not found in response');
         }
-        setError(null);
-    })
-      .catch((err) => {
+      } catch (err) {
         console.error('Error fetching user:', err);
         setError(err.message);
         setUser(null);
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
 
   return (
     <UserContext.Provider value={{ user, setUser, loading, error }}>
@@ -50,5 +64,9 @@ const UserProvider = ({ children }) => {
 };
 
 export default UserProvider;
+
+
+
+
 
 

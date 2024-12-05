@@ -1,24 +1,22 @@
-// ProtectedRoute.jsx
-
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
-
-// Function to check if the user is authenticated
-const isAuthenticated = () => {
-  // Check if a token is stored in localStorage
-  const token = localStorage.getItem('token');
-  return token ? true : false;
-};
+import { UserContext } from './context/UserContext'; // Make sure this path is correct
 
 const ProtectedRoute = ({ children }) => {
-  if (!isAuthenticated()) {
-    // If not authenticated, redirect to login page
+  // Access the user state from context
+  const { user } = useContext(UserContext);
+
+  // If the user is not authenticated (user is null), redirect to the login page
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
-  return children; // Otherwise, render the protected children
+
+  // Otherwise, render the protected children
+  return children;
 };
 
 export default ProtectedRoute;
+
 
 
 

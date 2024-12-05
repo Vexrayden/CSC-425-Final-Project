@@ -4,6 +4,8 @@ const cors = require('cors');
 const apiRoutes = require('./routes/api'); // Import API routes
 const authRoutes = require('./routes/auth'); // Import Auth routes (This line was missing)
 const path = require('path'); // Import path for static files
+const bcrypt = require('bcryptjs');
+
 
 const app = express();
 const port = 3000;

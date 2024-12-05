@@ -8,7 +8,7 @@ import Emails from './Emails';
 import Profile from './Profile';
 import NotFound from './NotFound';
 import ProtectedRoute from './ProtectedRoute';
-import { UserProvider } from './context/UserContext'; // Import UserProvider for global state management
+import UserProvider from './context/UserContext'; // Import UserProvider for global state management
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
@@ -18,8 +18,9 @@ const root = createRoot(document.getElementById('root'));
 // Rendering the application
 root.render(
   <React.StrictMode>
-    <UserProvider>
-      <Router>
+    {/* Wrap the entire app in UserProvider and Router */}
+    <Router>
+      <UserProvider>
         <Routes>
           {/* Public Route */}
           <Route path="/" element={<App />} />
@@ -56,11 +57,13 @@ root.render(
           {/* Fallback Route for 404 */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Router>
-    </UserProvider>
+      </UserProvider>
+    </Router>
   </React.StrictMode>
 );
 
-// performance statiscitcs tracking
+// performance statistics tracking
 reportWebVitals();
+
+
 

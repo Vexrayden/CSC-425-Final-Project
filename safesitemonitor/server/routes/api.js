@@ -2,6 +2,8 @@ const express = require('express');
 const authenticateToken = require('./auth'); // Ensure this middleware is correct
 const User = require('../models/user'); // Import your User model
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+
 
 // Example of a protected route
 router.get('/protected-route', authenticateToken, (req, res) => {
@@ -29,6 +31,11 @@ router.post('/user/:userId/accounts', authenticateToken, async (req, res) => {
 
   try {
     // Ensure the user making the request is the same as the user in the URL
+    if (!req.user || !req.user.userId) {
+      return res.status(400).json({ message: 'Invalid token: user data missing' });
+    }
+
+    // If the userId from the token doesn't match the userId in the URL
     if (req.user.userId !== userId) {
       return res.status(403).json({ message: 'You are not authorized to perform this action' });
     }
@@ -50,8 +57,11 @@ router.post('/user/:userId/accounts', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: 'Account with this email already exists' });
     }
 
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Add the new account to the user's accounts array
-    user.accounts.push({ service, email, password });
+    user.accounts.push({ service, email, password: hashedPassword });
     await user.save();
 
     res.status(201).json({ message: 'External account added successfully!', user });
