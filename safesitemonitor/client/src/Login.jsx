@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Axios for making HTTP requests
-import { UserContext } from './context/UserContext';
+import { UserContext } from './context/UserContext'; // Import UserContext
+
 
 const Login = () => {
-  const navigate = useNavigate();
   const { setUser } = useContext(UserContext); // Get setUser from context
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState(''); // Takes username inputs
   const [email, setEmail] = useState(''); // Takes email inputs (for registration)
@@ -26,7 +27,9 @@ const Login = () => {
         password: trimmedPassword,
       });
 
-      if (response.data && response.data.token && response.data.userId) {
+      console.log('Login Response:', response.data);
+
+      if (response.data && response.data.token) {
         // Store token in localStorage
         localStorage.setItem('token', response.data.token);
 
@@ -169,3 +172,4 @@ const Login = () => {
 };
 
 export default Login;
+

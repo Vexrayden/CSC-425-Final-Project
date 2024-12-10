@@ -1,0 +1,23 @@
+{
+    "presets": [
+      "@babel/preset-env",   // Transpile modern JavaScript (ES6+)
+      "@babel/preset-react"  // Handle JSX syntax in React
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime"  // Helps with async functions and class properties
+    ],
+    "env": {
+      "test": {
+        "presets": [
+          "@babel/preset-env",   // Ensure ES6+ is transpiled for tests
+          "@babel/preset-react"  // Ensure JSX is transpiled for tests
+        ],
+        "plugins": [
+          "@babel/plugin-transform-runtime",
+          "babel-plugin-transform-react-remove-prop-types" // Optional: Remove PropTypes in production
+        ]
+      }
+    }
+  }
+  
+  

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid'); // for user id on external accounts
 
 const Schema = mongoose.Schema;
 
@@ -25,6 +26,11 @@ const accountSchema = new Schema({
 
 // Define User Schema
 const userSchema = new Schema({
+    id: {
+        type: String,
+        default: uuidv4, // Automatically generate a unique ID
+        unique: true,    // Ensure this ID is unique
+    },
     username: {
         type: String,
         required: true,
@@ -46,7 +52,7 @@ const userSchema = new Schema({
         enum: ['user', 'admin'],
         default: 'user'
     },
-    accounts: [accountSchema], // <-- Fixed here to match the API
+    accounts: [accountSchema], // Keeping accounts structure as is
     created_at: {
         type: Date,
         default: Date.now
@@ -61,6 +67,7 @@ const userSchema = new Schema({
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
+
 
 
 

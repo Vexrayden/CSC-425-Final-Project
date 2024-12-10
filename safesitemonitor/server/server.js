@@ -26,8 +26,8 @@ app.use(cors({
 }));
 
 // Mount API routes
-app.use('/api', apiRoutes);  // All routes in api.js will be prefixed with /api
-app.use('/api/auth', authRoutes);  // Mount authRoutes here
+app.use('/api', apiRoutes);  //api routes
+app.use('/api/auth', authRoutes);  // auth route
 
 // Default route for root path to check server status
 app.get('/', (req, res) => {

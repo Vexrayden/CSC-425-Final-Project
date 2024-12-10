@@ -1,0 +1,19 @@
+{
+    "presets": [
+      "@babel/preset-env"  // Transpile ES6+ to Node.js compatible code
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime"  // Optional, helps with async functions and class properties
+    ],
+    "env": {
+      "test": {
+        "presets": [
+          "@babel/preset-env"  // Ensures compatibility with Node.js for testing
+        ],
+        "plugins": [
+          "@babel/plugin-transform-runtime"
+        ]
+      }
+    }
+  }
+  

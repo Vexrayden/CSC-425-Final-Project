@@ -38,8 +38,15 @@ const UserProvider = ({ children }) => {
 
         const data = await response.json();
 
+        // Assuming the response has the 'user' field containing the user data
         if (data.user) {
-          setUser(data.user); // Update the user state with the returned user object
+          // Update the user state with the returned user object
+          setUser({
+            userId: data.user.id, // Use the new manually generated 'id'
+            username: data.user.username,
+            email: data.user.email,
+            token: token,
+          });
           setError(null);
         } else {
           throw new Error('Invalid response format: "user" not found in response');
@@ -56,6 +63,16 @@ const UserProvider = ({ children }) => {
     fetchUser();
   }, [navigate]);
 
+  useEffect(() => {
+    if (user) {
+      // Only navigate to /dashboard if we're not already on the dashboard page
+      if (window.location.pathname !== '/dashboard') {
+        navigate('/dashboard');
+      }
+    }
+  }, [user, navigate]);
+  
+
   return (
     <UserContext.Provider value={{ user, setUser, loading, error }}>
       {children}
@@ -64,9 +81,3 @@ const UserProvider = ({ children }) => {
 };
 
 export default UserProvider;
-
-
-
-
-
-

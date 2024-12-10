@@ -1,19 +1,18 @@
 const express = require('express');
-const authenticateToken = require('./auth'); // Ensure this middleware is correct
+const authenticateToken  = require('./auth'); // Ensure this middleware is correct
 const User = require('../models/user'); // Import your User model
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 
-
-// Example of a protected route
+// Protected route example
 router.get('/protected-route', authenticateToken, (req, res) => {
   res.json({ message: 'This is a protected route, and you are authenticated!' });
 });
 
-// Route to fetch the current user
+// Fetch current user
 router.get('/current-user', authenticateToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId); // `req.user` is populated by the token middleware
+    const user = await User.findOne({ id: req.user.userId });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -24,47 +23,32 @@ router.get('/current-user', authenticateToken, async (req, res) => {
   }
 });
 
-// Route to add external accounts for the logged-in user
+// Add external accounts for a user
 router.post('/user/:userId/accounts', authenticateToken, async (req, res) => {
   const { userId } = req.params;
   const { email, password, service } = req.body;
 
   try {
-    // Ensure the user making the request is the same as the user in the URL
-    if (!req.user || !req.user.userId) {
-      return res.status(400).json({ message: 'Invalid token: user data missing' });
-    }
-
-    // If the userId from the token doesn't match the userId in the URL
     if (req.user.userId !== userId) {
-      return res.status(403).json({ message: 'You are not authorized to perform this action' });
+      return res.status(403).json({ message: 'Unauthorized access' });
     }
 
-    // Validate input
-    if (!email || !password || !service) {
-      return res.status(400).json({ message: 'Email, password, and service are required.' });
-    }
-
-    // Find the user by ID
-    const user = await User.findById(userId);
+    const user = await User.findOne({ id: userId });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check if the account already exists for the provided email
     const existingAccount = user.accounts.find(account => account.email === email);
     if (existingAccount) {
       return res.status(400).json({ message: 'Account with this email already exists' });
     }
 
-    // Hash the password before storing it
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Add the new account to the user's accounts array
     user.accounts.push({ service, email, password: hashedPassword });
     await user.save();
 
-    res.status(201).json({ message: 'External account added successfully!', user });
+    res.status(201).json({ message: 'External account added successfully!', accounts: user.accounts });
   } catch (error) {
     console.error('Error adding external account:', error);
     res.status(500).json({ message: 'Server error. Please try again later.' });
@@ -72,6 +56,4 @@ router.post('/user/:userId/accounts', authenticateToken, async (req, res) => {
 });
 
 module.exports = router;
-
-
 

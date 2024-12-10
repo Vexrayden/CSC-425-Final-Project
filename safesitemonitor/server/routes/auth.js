@@ -1,40 +1,30 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const User = require('../models/user'); // Import your User schema/model
+const { v4: uuidv4 } = require('uuid'); // Import uuid for generating unique IDs
+const User = require('../models/user'); // User schema
 const router = express.Router();
 
-// Secret key for JWT
-const JWT_SECRET = 'Here_Key'; // Make sure this secret is secure in a real application
+// my secret key
+const JWT_SECRET = 'Here_Key_fortest';
 
-// Middleware to authenticate the token
+// Generate JWT Token
+const generateToken = (user) => jwt.sign(
+  { userId: user.id, username: user.username }, // Use the unique `id` field
+  JWT_SECRET,
+  { expiresIn: '1h' }
+);
+
+// Middleware: Authenticate Token
 const authenticateToken = (req, res, next) => {
-  // Get token from Authorization header
-  const token = req.headers['authorization']?.split(' ')[1]; // Authorization: Bearer <token>
-  
-  if (!token) {
-    return res.status(401).json({ message: 'Token is required' });
-  }
+  const token = req.headers['authorization']?.split(' ')[1]; // Extract Bearer token
+  if (!token) return res.status(401).json({ message: 'Token required' });
 
-  // Verify token
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ message: 'Invalid or expired token' });
-    }
-
-    // Attach decoded user information to the request object
-    req.user = decoded;
+    if (err) return res.status(403).json({ message: 'Invalid or expired token' });
+    req.user = decoded; // Attach decoded user data to request
     next();
   });
-};
-
-// Generate a JWT token for a user
-const generateToken = (user) => {
-  return jwt.sign(
-    { userId: user._id, username: user.username },
-    JWT_SECRET,
-    { expiresIn: '1h' }
-  );
 };
 
 // Register a new user
@@ -42,86 +32,83 @@ router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // Check if username or email already exists
+    // Check for existing user with same username or email
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
       return res.status(400).json({ message: 'Username or email already exists' });
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 8);
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
-    const user = new User({ username, email, password: hashedPassword });
+    // Generate unique ID for user
+    const userId = uuidv4();
+
+    // Create and save user
+    const user = new User({
+      id: userId, // Add the generated unique ID
+      username,
+      email,
+      password: hashedPassword,
+      accounts: [], // Initialize with an empty array for external accounts
+    });
+
     await user.save();
 
-    // Generate a token for the newly registered user
-    const token = generateToken(user);
-
-    // Respond with the user ID and token
-    res.status(201).json({
-      message: 'User registered successfully',
-      userId: user._id,
-      token,
-    });
+    const token = generateToken(user); // Generate JWT for new user
+    res.status(201).json({ message: 'User registered successfully', token });
   } catch (error) {
-    console.error('Registration error:', error.message);
     res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 });
 
-// Login route
+// login for user
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Find the user by username
+    // Find user by username
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(404).json({ message: 'Invalid username or password' });
+      return res.status(400).json({ message: 'Invalid username or password' });
     }
 
-    // Compare the provided password with the stored hashed password
+    // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid username or password' });
+      return res.status(400).json({ message: 'Invalid username or password' });
     }
 
-    // Generate a token for the authenticated user
-    const token = generateToken(user);
-
-    // Respond with the token and user ID
-    res.json({
-      message: 'Login successful',
-      userId: user._id,
-      token,
-    });
+    const token = generateToken(user); // Generate JWT
+    // Send both token and userId in the response
+    res.json({ message: 'Login successful', token, userId: user.id });
   } catch (error) {
-    console.error('Login error:', error.message);
     res.status(500).json({ message: 'Error logging in', error: error.message });
   }
 });
 
-// Example of a protected route that requires authentication
-router.get('/protected', authenticateToken, (req, res) => {
-  res.json({ message: 'This is a protected route, and you are authenticated!' });
-});
 
-// Route to fetch the current user (authenticated)
+// Get current authenticated user
 router.get('/current-user', authenticateToken, async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId); // `req.user` is populated by the token middleware
+    // Find user by custom `id` field
+    const user = await User.findOne({ id: req.user.userId }); // Use `id` from the token
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    res.status(200).json({ user });
+    res.json({ user });  // Ensure user object is returned
   } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Server error. Please try again later.' });
+    res.status(500).json({ message: 'Error fetching user', error: error.message });
   }
 });
 
+
 module.exports = router;
+
+
+
+
+
 
 
 
