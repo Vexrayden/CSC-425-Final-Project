@@ -15,7 +15,7 @@ const App = () => {
   return (
     <div>
       <h1>Home Page</h1>
-      <p>Welcome to the homepage!</p>
+      <p>Welcome to Safe Site Monitoring!</p>
       <button onClick={goToLoginPage}>Go to Login Page</button>
     </div>
   );
