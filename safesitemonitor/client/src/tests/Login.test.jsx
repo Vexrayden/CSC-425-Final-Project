@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Login from '../Login';
 import { BrowserRouter as Router } from 'react-router-dom'; // For routing context
-import { UserContext } from './context/UserContext'; // Import UserContext
+import { UserContext } from '../context/UserContext'; // Import UserContext
 import React from 'react'; // Add this line to your test files
 
 

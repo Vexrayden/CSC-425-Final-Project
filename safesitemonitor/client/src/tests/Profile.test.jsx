@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { UserContext } from './context/UserContext'; // Import UserContext
+import { UserContext } from '../context/UserContext'; // Import UserContext
 import Profile from '../Profile';
 
 // Mock data for the user context

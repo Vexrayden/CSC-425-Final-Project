@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { UserContext } from './context/UserContext'; // Import UserContext
+import { UserContext } from '../context/UserContext'; // Import UserContext
 import { BrowserRouter as Router } from 'react-router-dom';
 import ProtectedRoute from '../ProtectedRoute';
 import React from 'react'; // Add this line to your test files

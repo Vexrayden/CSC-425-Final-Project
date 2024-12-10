@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, useNavigate } from 'react-router-dom';
-import { UserContext } from './context/UserContext'; // Import UserContext
+import { UserContext } from '../context/UserContext'; // Import UserContext
 import Emails from '../Emails';
 import EmailForm from '../EmailForm';
 
