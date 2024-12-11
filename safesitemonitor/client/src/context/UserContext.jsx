@@ -7,7 +7,7 @@ const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Use navigate to redirect if needed
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -20,15 +20,14 @@ const UserProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         const response = await fetch('http://localhost:3000/api/current-user', {
-          headers: { Authorization: `Bearer ${token}` }, // Pass token as Bearer token
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.status === 401 || response.status === 403) {
-          // If token is invalid or expired, clear token and redirect to login page
-          localStorage.removeItem('token');
+          localStorage.removeItem('token'); // Clear invalid token
           setUser(null);
           setError('Token expired or invalid');
-          navigate('/login'); // Redirect to login page
+          navigate('/login'); // Redirect to login
           return;
         }
 
@@ -38,11 +37,9 @@ const UserProvider = ({ children }) => {
 
         const data = await response.json();
 
-        // Assuming the response has the 'user' field containing the user data
         if (data.user) {
-          // Update the user state with the returned user object
           setUser({
-            userId: data.user.id, // Use the new manually generated 'id'
+            userId: data.user.id,
             username: data.user.username,
             email: data.user.email,
             token: token,
@@ -63,19 +60,10 @@ const UserProvider = ({ children }) => {
     fetchUser();
   }, [navigate]);
 
-  useEffect(() => {
-    if (user) {
-      // Only navigate to /dashboard if we're not already on the dashboard page
-      if (window.location.pathname !== '/dashboard') {
-        navigate('/dashboard');
-      }
-    }
-  }, [user, navigate]);
-  
-
   return (
     <UserContext.Provider value={{ user, setUser, loading, error }}>
-      {children}
+      {/* Render a loading spinner or nothing if the app is still loading */}
+      {loading ? <p>Loading...</p> : children}
     </UserContext.Provider>
   );
 };
